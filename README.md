@@ -1,1 +1,1 @@
-"# bsn-fabric-sc-go" 
+# bsn-fabric-sc-go
