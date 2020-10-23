@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bsn-fabric-sc/chaincode"
 	"fmt"
+	"github.com/chenxifun/bsn-fabric-sc-go/chaincode"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
