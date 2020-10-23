@@ -3,6 +3,7 @@ package chaincode
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/chenxifun/bsn-fabric-sc-go/crosschaincode"
 	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -27,7 +28,7 @@ type SCChaincode struct {
 
 func (c *SCChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	fmt.Println("chainCode Init")
-	return InitCrossChain(stub)
+	return crosschaincode.InitCrossChain(stub)
 	//return shim.Success(successMsg)
 }
 
@@ -56,7 +57,7 @@ func (c *SCChaincode) callNFT(stub shim.ChaincodeStubInterface, args []string) p
 		return shim.Error("the args cannot be empty")
 	}
 
-	reqId, err := CallService(stub, "nft", args[0], "callback", 100)
+	reqId, err := crosschaincode.CallService(stub, "nft", args[0], "callback", 100)
 	if err != nil {
 		return shim.Error("callNFT has failed ," + err.Error())
 	}
@@ -78,7 +79,7 @@ func (c *SCChaincode) callNFT(stub shim.ChaincodeStubInterface, args []string) p
 func (c *SCChaincode) callback(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
 	output := args[0]
-	res := &ServiceResponse{}
+	res := &crosschaincode.ServiceResponse{}
 	err := json.Unmarshal([]byte(output), res)
 	if err != nil {
 		return shim.Error("error")
