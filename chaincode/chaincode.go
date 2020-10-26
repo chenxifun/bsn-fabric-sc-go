@@ -28,14 +28,13 @@ type SCChaincode struct {
 
 func (c *SCChaincode) Init(stub shim.ChaincodeStubInterface) peer.Response {
 	fmt.Println("chainCode Init")
-	return crosschaincode.InitCrossChain(stub)
-	//return shim.Success(successMsg)
+	return shim.Success(successMsg)
 }
 
 func (c *SCChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	fmt.Println("chainCode Invoke")
-	function, args := stub.GetFunctionAndParameters()
 
+	function, args := stub.GetFunctionAndParameters()
 	if strings.ToLower(function) == "callnft" {
 		return c.callNFT(stub, args)
 	}
@@ -53,11 +52,15 @@ func (c *SCChaincode) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 func (c *SCChaincode) callNFT(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
-	if len(args) == 0 {
-		return shim.Error("the args cannot be empty")
+	if len(args) < 3 {
+		return shim.Error("the args has error")
 	}
 
-	reqId, err := crosschaincode.CallService(stub, "nft", args[0], "callback", 100)
+	input := args[0]
+	callBackChaincode := args[1]
+	callBackFcn := args[2]
+
+	reqId, err := crosschaincode.CallService(stub, "nft", input, callBackChaincode, callBackFcn, 100)
 	if err != nil {
 		return shim.Error("callNFT has failed ," + err.Error())
 	}
@@ -65,7 +68,7 @@ func (c *SCChaincode) callNFT(stub shim.ChaincodeStubInterface, args []string) p
 
 	cd := &CrossData{
 		Id:    reqId,
-		Input: args[0],
+		Input: input,
 	}
 
 	cdb, _ := json.Marshal(cd)
@@ -79,10 +82,9 @@ func (c *SCChaincode) callNFT(stub shim.ChaincodeStubInterface, args []string) p
 func (c *SCChaincode) callback(stub shim.ChaincodeStubInterface, args []string) peer.Response {
 
 	output := args[0]
-	res := &crosschaincode.ServiceResponse{}
-	err := json.Unmarshal([]byte(output), res)
+	res, err := crosschaincode.GetCallBackInfo(output)
 	if err != nil {
-		return shim.Error("error")
+		return shim.Error("get callback info has error")
 	}
 
 	ser, err := stub.GetState(crossKey(res.RequestId))
