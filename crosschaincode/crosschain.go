@@ -3,6 +3,7 @@ package crosschaincode
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strings"
 )
@@ -26,7 +27,7 @@ func CallService(stub shim.ChaincodeStubInterface, serviceName string, input int
 	}
 
 	if strings.TrimSpace(callbackCC) != "" && strings.TrimSpace(callbackFcn) != "" {
-		req.callBack = &CallBackInfo{
+		req.CallBack = &CallBackInfo{
 			ChainCode: callbackCC,
 			FuncName:  callbackFcn,
 		}
@@ -45,6 +46,7 @@ func CallService(stub shim.ChaincodeStubInterface, serviceName string, input int
 }
 
 func GetCallBackInfo(output string) (*ServiceResponse, error) {
+	fmt.Println("output:", output)
 	res := &ServiceResponse{}
 	err := json.Unmarshal([]byte(output), res)
 	if err != nil {

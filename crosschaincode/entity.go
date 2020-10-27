@@ -10,7 +10,7 @@ type ServiceRequest struct {
 	ServiceName string        `json:"serviceName,omitempty"` //服务定义名称
 	Input       string        `json:"input,omitempty"`       //服务请求输入；需符合服务的输入规范
 	Timeout     uint64        `json:"timeout,omitempty"`     //请求超时时间；在目标链上等待的最大区块数
-	callBack    *CallBackInfo `json:"callback,omitempty"`    //回调的合约以及方法
+	CallBack    *CallBackInfo `json:"callback,omitempty"`    //回调的合约以及方法
 }
 
 type CallBackInfo struct {
